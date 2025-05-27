@@ -1,34 +1,34 @@
 const express = require("express");
-
+const connectDB = require("./config/database")
 const app = express();
+const User = require("./models/user")
 
-// app.use('/',(req, res)=>{
-//     res.send(("Heloo from Initial..."))
-// })
 
-app.get('/user', (req, res)=>{
-    res.send({firstNAme:"Prakash", lastName:"Raj"})
+app.post("/signup", async (req, res) => {
+    const user = new User({
+        firstName: "Prakash",
+        lastName: "Raj",
+        emailId: "prakash@gmail.com",
+        password: "Prakash@1234",
+    });
+
+    try{
+        await user.save();
+        res.send("User added Succesfully....")
+    } catch(err){
+        res.status(400).send("Error saving the user : "+err.message)
+    }
+
 })
 
-app.post('/user',(req,res)=>{
-    console.log(req.body);
-    
-    res.send("Posted User Successfully")
-})
+connectDB()
+    .then(() => {
+        console.log("Database Connected successfully....")
+        app.listen(7777, () => {
+            console.log("Server is Successfully listening on port 7777....")
+        });
+    })
+    .catch((err) => {
+        console.log("Database cannot be Connected.....")
+    })
 
-app.delete('/user',(req,res)=>{
-    res.send("Deleted Successfully....!")
-})
-
-app.use('/test',(req, res)=>{
-    res.send(("Heloo from the server..."))
-})
-
-app.use('/hello',(req, res)=>{
-    res.send(("Heloo Heloo Hellloo..."))
-})
-
-
-app.listen(7777, ()=>{
-    console.log("Server is Successfully listening on port 3000....")
-});
